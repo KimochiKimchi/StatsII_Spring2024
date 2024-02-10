@@ -27,7 +27,7 @@ pkgTest <- function(pkg){
 # ex: stringr
 # lapply(c("stringr"),  pkgTest)
 
-lapply(c(),  pkgTest)
+lapply(c("tidyverse"),  pkgTest)
 
 # set wd for current folder
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -50,10 +50,14 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 graduation <- read.table("http://statmath.wu.ac.at/courses/StatsWithR/Powers.txt")
 
+head(graduation)
+
 # (a) Perform a logistic regression of hsgrad on the other variables in the data set.
 # Compute a likelihood-ratio test of the omnibus null hypothesis that none of the explanatory variables influences high-school graduation. 
 # Then construct 95-percent confidence intervals for the coefficients of the seven explanatory variables. 
 # What conclusions can you draw from these results? Finally, offer two brief, but concrete, interpretations of each of the estimated coefficients of income and intact.
+?glm
+model <- glm
 
 # (b) The logistic regression in the previous problem assumes that the partial relationship between the log-odds of high-school graduation and number of siblings is linear. 
 # Test for nonlinearity by fitting a model that treats nsibs as a factor, performing an appropriate likelihood-ratio test. 

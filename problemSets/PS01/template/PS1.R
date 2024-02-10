@@ -38,11 +38,29 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 #####################
 
 set.seed(123)
+empirical <- rcauchy(1000, location = 0, scale = 1)
+
 # create empirical distribution of observed data
+KS_Test <- function (data){
 ECDF <- ecdf(data)
 empiricalCDF <- ECDF(data)
 # generate test statistic
 D <- max(abs(empiricalCDF - pnorm(data)))
+# Calculating the p-value
+p_value <- 1 - pnorm(D * sqrt(length(data)))
+# Return result
+result <- list(
+  test_statistic = D,
+  p_value = p_value
+)
+
+return(result)
+}
+# Performing the K-S test with our data
+KS_Test(empirical)
+
+# Checking the result with the in-built function in R
+ks.test(empirical,"pnorm")
 
 #####################
 # Problem 2

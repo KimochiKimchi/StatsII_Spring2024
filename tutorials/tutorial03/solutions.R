@@ -17,6 +17,8 @@ lapply(c("tidyverse"),  pkgTest)
 #  Using stringsAsFactors
 graduation <- read.table("http://statmath.wu.ac.at/courses/StatsWithR/Powers.txt",
                          stringsAsFactors = TRUE)
+head(graduation)
+
 #  Option 2: 
 #  Parse column names as a vector to colClasses
 graduation <- read.table("http://statmath.wu.ac.at/courses/StatsWithR/Powers.txt",
@@ -29,6 +31,8 @@ summary(graduation)
 
 # Drop problematic cases
 graduation <- graduation[-which(graduation$nsibs < 0),]
+
+min(graduation$nsibs)
 
 #  Option 3: 
 #  Coerce from a character vector to a logical vector
@@ -49,20 +53,28 @@ mod <- glm(hsgrad ~ .,
 
 summary(mod)
 
+
 ## Likelihood ratio test
 #  Create a null model
 nullMod <- glm(hsgrad ~ 1, # 1 = fit an intercept only (i.e. sort of a "mean") 
                data = graduation, 
                family = "binomial")
 
+summary(nullMod)
+
 #  Run an anova test on the model compared to the null model 
 anova(nullMod, mod, test = "Chisq")
-anova(nullMod, mod, test = "LRT") # LRT is equivalent
+anova(nullMod, mod, test = "LRT") # LRT (likelihood-ratio test) is equivalent
+
+## Helps us check whether our model is more accurate than the null model
 
 ##  Extracting confidence intervals (of the coefficients)
 ?confint
 exp(confint(mod)) # Remember: transform to odds ratio using exp()
+exp(coef(mod)) 
 
+
+?exp
 # An option for making a data.frame of confidence intervals and coefficients
 confMod <- data.frame(cbind(lower = exp(confint(mod)[,1]), 
                             coefs = exp(coef(mod)), 
@@ -130,6 +142,7 @@ graduation$nsibs_cut <- cut(graduation$nsibs,
 mod3 <- glm(hsgrad ~., 
             data = graduation[,!names(graduation) %in% c("nsibs", "nsibs_f")], 
             family = "binomial")
+
 summary(mod3)
 summary(mod)
 
