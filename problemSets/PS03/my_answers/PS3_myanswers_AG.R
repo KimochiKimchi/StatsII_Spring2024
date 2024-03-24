@@ -51,9 +51,11 @@ gdp_data[gdp_data$GDPWdiff>0, "factor_GDP"] <- "positive"
 gdp_data[gdp_data$GDPWdiff<0, "factor_GDP"] <- "negative"
 gdp_data$factor_GDP <- relevel(as.factor(gdp_data$factor_GDP), ref="no change")
 
+# I run an unordered multinomial logit model
 unorderedLogit <- multinom(factor_GDP ~ REG + OIL, data=gdp_data)
 summary(unorderedLogit)
 
+#Using texreg to make a table in LaTex
 texreg(unorderedLogit)
 
 #1b) Construct and interpret an ordered multinomial logit with 
@@ -62,11 +64,20 @@ texreg(unorderedLogit)
 
 #For this, I relevel the variable again to create an ordering
 gdp_data$factor_GDP1 <- relevel(gdp_data$factor_GDP, ref="negative")
-# run ordered multinom logit
+
+# I run an ordered multinom logit model
 OrderedModel <- polr(factor_GDP1 ~ REG + OIL, data=gdp_data)
 summary(OrderedModel)
 
+#Using texreg to make a table in LaTex
 texreg(OrderedModel)
+
+#Calculating a p-value
+ctable <- coef(summary(OrderedModel))
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+(ctable <- cbind(ctable, "p value" = p))
+
+
 #####################
 # Problem 2
 #####################
@@ -75,10 +86,22 @@ texreg(OrderedModel)
 mexico_elections <- read.csv("https://raw.githubusercontent.com/ASDS-TCD/StatsII_Spring2024/main/datasets/MexicoMuniData.csv")
 
 
-#2a)
-poisson <- glm(PAN.visits.06 ~ competitive.district + marginality.06 + PAN.governor.06, data = mexico_elections, family=poisson)
-summary(poisson)
+#2a) Run a Poisson regression because the outcome is a count variable. 
+# Is there evidence that PAN presidential candidates visit swing districts more? 
+# Provide a test statistic and p-value.
 
-texreg(poisson)
-#2b)
-predict(poisson, newdata=data.frame(competitive.district=1, marginality.06 = 0, PAN.governor.06=1), type="response")
+# I run a Poisson regression model
+poissonModel <- glm(PAN.visits.06 ~ competitive.district + marginality.06 + PAN.governor.06, data = mexico_elections, family=poisson)
+summary(poissonModel)
+
+# Using texreg to make a table in LaTex
+texreg(poissonModel)
+
+# Interpreting outputs
+cfs <- coef(poissonModel)
+cfs
+
+#2c) I use the predict function and put the corresponding values for each input variable
+predict(poissonModel, newdata=data.frame(competitive.district=1, 
+                                    marginality.06 = 0, 
+                                    PAN.governor.06=1), type="response")
