@@ -32,7 +32,6 @@ library(nnet)
 
 #Setting the working directory
 getwd()
-setwd("C:/Users/Lenovo/Desktop/2023 ASDS/Applied Stats 2/Replication/Pls Replicate")
 #First, I input the data
 load("CleanDataExperiment2")
 
