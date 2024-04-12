@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+
+\title{Problem Set 4}
+\author{Aryan Goyal}
+\date{April 2024}
+
+\begin{document}
+
+\maketitle
+
+First, I load in the data and inspect it:
+
+\begin{lstlisting}[language=R]
+data("child")
+head(child)
+summary(child)    
+\end{lstlisting}
+    
+\section{Question 1}
+
+We’re interested in modeling the historical causes of child mortality. We 
+have data from 26855 children born in Skelleftea, Sweden from 1850 to 
+1884. Using the ”child” dataset in the eha library, fit a Cox 
+Proportional Hazard model using mother’s age and infant’s gender
+as covariates. Present and interpret the output.
+
+\section{Answer}
+
+\begin{lstlisting}
+
+child_surv <- with(child, Surv(enter, exit, event))
+
+Model <- coxph(child_surv ~ m.age + sex, data = child)
+summary(Model)
+
+#Getting code for LaTex
+stargazer(Model)
+\end{lstlisting}
+
+
+
+\begin{table}[H] \centering 
+  \caption{Cox Proportional Hazard Model} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-2} 
+\\[-1.8ex] & child\_surv \\ 
+\hline \\[-1.8ex] 
+ m.age & 0.008$^{***}$ \\ 
+  & (0.002) \\ 
+  & \\ 
+ sexfemale & $-$0.082$^{***}$ \\ 
+  & (0.027) \\ 
+  & \\ 
+\hline \\[-1.8ex] 
+Observations & 26,574 \\ 
+R$^{2}$ & 0.001 \\ 
+Max. Possible R$^{2}$ & 0.986 \\ 
+Log Likelihood & $-$56,503.480 \\ 
+Wald Test & 22.520$^{***}$ (df = 2) \\ 
+LR Test & 22.518$^{***}$ (df = 2) \\ 
+Score (Logrank) Test & 22.530$^{***}$ (df = 2) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table}
+
+
+I fit a Cox  Proportional Hazard model using mother’s age and infant’s gender as covariates. The table above show the result of my model.
+\\
+\\
+Interpretation of estimated coefficient for age:
+\\
+The logged hazard ratio converts to a hazard ratio of exp(0.008) = 1.008.
+Holding infant gender constant, a one unit increase in mother's age is associated with an increase in the logged hazard ratio for infants of the same gender.This means that for every one-year increase in mother's age, the hazard of death for the child increases by a multiplicative factor of 1.008. Hence, as mothers get older, the risk of child mortality also increases on average.
+\\
+\\
+Interpretation of infant's gender:
+\\
+The negative coefficient for "sexfemale" translates to a hazard ratio of exp(-0.08) = 0.92. 
+Holding mother's age constant, the infant's sex being female is associated with a 0.92 times lower hazard of death compared to males on average. 
+\end{document}
